@@ -1,0 +1,75 @@
+﻿
+@model LeaveManagementSystem.ViewModels.LeaveRequestViewModel
+@{
+    ViewData["Title"] = "Apply for Leave";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Apply for Leave</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="StartDate" class="form-label">Start Date</label>
+                                <input asp-for="StartDate" class="form-control" type="date" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="EndDate" class="form-label">End Date</label>
+                                <input asp-for="EndDate" class="form-control" type="date" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="LeaveType" class="form-label">Leave Type</label>
+                        <select asp-for="LeaveType" class="form-select" asp-items="Html.GetEnumSelectList<LeaveManagementSystem.Models.LeaveType>()">
+                            <option value="">Select Leave Type</option>
+                        </select>
+                        <span asp-validation-for="LeaveType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="ApproverId" class="form-label">For Approver</label>
+                        <select asp-for="ApproverId" class="form-control" asp-items="Model.ForApproval">
+                            <option value="">Select Approver</option>
+                        </select>
+                        <span asp-validation-for="ApproverId" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Reason" class="form-label"></label>
+                        <textarea asp-for="Reason" class="form-control" rows="4" placeholder="Enter reason for leave"></textarea>
+                        <span asp-validation-for="Reason" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                    <a asp-action="MyRequests" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startDate = document.getElementById('StartDate');
+            const endDate = document.getElementById('EndDate');
+
+            startDate.addEventListener('change', function () {
+                endDate.min = startDate.value;
+            });
+        });
+    </script>
+}

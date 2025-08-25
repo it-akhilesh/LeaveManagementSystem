@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Welcome, @ViewBag.UserName!</h2>
+        <p class="text-muted">Role: @ViewBag.UserRole</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Employees</h5>
+                        <h2>@ViewBag.TotalEmployees</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">My Requests</h5>
+                        <h2>@ViewBag.MyRequests</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-calendar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="@Url.Action("Create", "Leave")" class="btn btn-primary mb-2 d-block">Apply for Leave</a>
+                <a href="@Url.Action("MyRequests", "Leave")" class="btn btn-outline-primary mb-2 d-block">View My Requests</a>
+                <a href="@Url.Action("Profile", "Employee")" class="btn btn-outline-secondary d-block">Update Profile</a>
+            </div>
+        </div>
+    </div>
+
+    @if (User.IsInRole("Manager") || User.IsInRole("HR") || User.IsInRole("Admin"))
+    {
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Management Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="@Url.Action("PendingRequests", "Leave")" class="btn btn-warning mb-2 d-block">Pending Approvals</a>
+                    @if (User.IsInRole("HR") || User.IsInRole("Admin"))
+                    {
+                        <a href="@Url.Action("List", "Employee")" class="btn btn-outline-info mb-2 d-block">Employee List</a>
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-outline-success d-block">Add New Employee</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

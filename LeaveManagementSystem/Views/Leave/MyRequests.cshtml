@@ -1,0 +1,100 @@
+﻿
+@model IEnumerable<LeaveManagementSystem.ViewModels.LeaveRequestViewModel>
+@{
+    ViewData["Title"] = "My Leave Requests";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Leave Requests</h2>
+    <a asp-action="Create" class="btn btn-primary">Apply for Leave</a>
+</div>
+
+@if (Model.Any())
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Days</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
+                                <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
+                                <td>@item.LeaveDays</td>
+                                <td>@item.LeaveType</td>
+                                
+                                <td>
+                                    @switch (item.Status)
+                                    {
+                                        case LeaveManagementSystem.Models.LeaveStatus.Pending:
+                                            <span class="badge bg-warning">Pending</span>
+                                            break;
+                                        case LeaveManagementSystem.Models.LeaveStatus.Approved:
+                                            <span class="badge bg-success">Approved</span>
+                                            break;
+                                        case LeaveManagementSystem.Models.LeaveStatus.Rejected:
+                                            <span class="badge bg-danger">Rejected</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@item.RequestDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailModal@(item.Id)">
+                                        View Details
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @foreach (var item in Model)
+    {
+        <!-- Detail Modal -->
+        <div class="modal fade" id="detailModal@(item.Id)" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Leave Request Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Leave Type:</strong> @item.LeaveType</p>                        
+                        <p><strong>Duration:</strong> @item.StartDate.ToString("dd/MM/yyyy") to @item.EndDate.ToString("dd/MM/yyyy") (@item.LeaveDays days)</p>
+                        <p><strong>Reason:</strong> @item.Reason</p>
+                        <p><strong>Status:</strong> @item.Status</p>
+                        @if (!string.IsNullOrEmpty(item.Comments))
+                        {
+                            <p><strong>Comments:</strong> @item.Comments</p>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="text-center">
+        <p>No leave requests found.</p>
+        <a asp-action="Create" class="btn btn-primary">Apply for Your First Leave</a>
+    </div>
+}
