@@ -81,9 +81,12 @@ namespace LeaveManagementSystem.Controllers
 
                 if (result.Succeeded)
                 {
+                    
                     await _userManager.AddToRoleAsync(user, model.Role);
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    var isEmailSent = await _emailSender.EmailSendAsync(model.Email, "Account Created", "Congratulation, Your account has been successfully created");
+                    string Subject = "Account Created";
+                    string body = $"Congratulation {user}, Your account has been successfully created." + $"Your password is {model.Password}.";
+                    var isEmailSent = await _emailSender.EmailSendAsync(model.Email,Subject, body);
                     TempData["SuccessMessage"] = "User Registered Successfully";
                     return RedirectToAction("Index", "Dashboard");
                 }
