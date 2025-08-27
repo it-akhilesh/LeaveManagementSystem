@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace LeaveManagementSystem.ViewModels
 {
@@ -31,5 +32,9 @@ namespace LeaveManagementSystem.ViewModels
 
         [Required]
         public string Role { get; set; }
+
+        public string? ManagerId { get; set; }
+
+        public List<SelectListItem>? ForManager { get; set; }
     }
 }

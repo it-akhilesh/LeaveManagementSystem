@@ -58,7 +58,19 @@ namespace LeaveManagementSystem.Controllers
         public async Task<IActionResult> Register()
         {
             ViewBag.Roles = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
-            return View();
+
+            var managers = await _userManager.GetUsersInRoleAsync("Manager");
+            var model = new RegisterViewModel()
+            {
+                ForManager = managers
+                            .Select(u => new SelectListItem
+                            {
+                                Value = u.Id,
+                                Text = $"{u.FirstName} {u.LastName} - ({u.Email})"
+                            }).ToList()
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -73,6 +85,7 @@ namespace LeaveManagementSystem.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     EmployeeId = model.EmployeeId,
+                    ManagerId = model.ManagerId,
                     DateOfJoining = DateTime.Now,
                     EmailConfirmed = true
                 };
@@ -83,20 +96,30 @@ namespace LeaveManagementSystem.Controllers
                 {
                     
                     await _userManager.AddToRoleAsync(user, model.Role);
+                    
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     string Subject = "Account Created";
-                    string body = $"Congratulation {user}, Your account has been successfully created." + $"Your password is {model.Password}.";
+                    string body = $"Congratulation Your user name is {user}, Your account has been successfully created." + $"Your password is {model.Password}.";
                     var isEmailSent = await _emailSender.EmailSendAsync(model.Email,Subject, body);
                     TempData["SuccessMessage"] = "User Registered Successfully";
                     return RedirectToAction("Index", "Dashboard");
                 }
 
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                
+
+                //foreach (var error in result.Errors)
+                //{
+                //    ModelState.AddModelError(string.Empty, error.Description);
+                //}
             }
 
+            var managers = await _userManager.GetUsersInRoleAsync("Manager");
+            model.ForManager = managers
+                            .Select(u => new SelectListItem
+                            {
+                                Value = u.Id,
+                                Text = $"{u.FirstName} {u.LastName} - ({u.Email})"
+                            }).ToList();
             ViewBag.Roles = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View(model);
         }
