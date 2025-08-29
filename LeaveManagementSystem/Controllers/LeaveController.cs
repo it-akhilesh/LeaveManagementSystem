@@ -66,16 +66,41 @@ namespace LeaveManagementSystem.Controllers
             //        new SelectListItem { Value = "3", Text = "User3" }
             //    }
             //};
-            var managers = await _userManager.GetUsersInRoleAsync("Manager");
-            var model = new LeaveRequestViewModel()
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+
+
+            var model = new LeaveRequestViewModel();
+
+            if (roles.Contains("Manager"))
             {
-                ForApproval = managers
-                            .Select(u => new SelectListItem
-                            {
-                                Value = u.Id,
-                                Text = $"{u.FirstName} {u.LastName} - ({u.Email})"
-                            }).ToList()
-            };
+                // Agar Manager hai, to Admin ko default approver set karna hai
+                var admins = await _userManager.GetUsersInRoleAsync("Admin");
+                var admin = admins.FirstOrDefault(); // Pehle Admin ko select kar liya
+
+                if (admin != null)
+                {
+                    model.ApproverId = admin.Id; // Default assign
+                    model.ForApproval = new List<SelectListItem> {
+                        new SelectListItem {
+                            Value = admin.Id,
+                            Text = $"{admin.FirstName} {admin.LastName} ({admin.Email})"
+                        }
+                    };
+                }
+
+            }
+
+            else
+            {
+                var managers = await _userManager.GetUsersInRoleAsync("Manager");
+                model.ForApproval = managers
+                           .Select(u => new SelectListItem
+                           {
+                               Value = u.Id,
+                               Text = $"{u.FirstName} {u.LastName} - ({u.Email})"
+                           }).ToList();
+            }
 
             return View(model);
         }
@@ -86,9 +111,21 @@ namespace LeaveManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
+                var roles = await _userManager.GetRolesAsync(user);
 
+                if (roles.Contains("Manager"))
+                {
+                    var admins = await _userManager.GetUsersInRoleAsync("Admin");
+                    var admin = admins.FirstOrDefault();
+                    if (admin != null)
+                    {
+                        model.ApproverId = admin.Id;
+                    }
+                }
                 // Calculate leave days
                 var leaveDays = CalculateLeaveDays(model.StartDate, model.EndDate);
+
+                string approverId = model.ApproverId;
 
                 var leaveRequest = new LeaveRequest
                 {
@@ -134,7 +171,7 @@ namespace LeaveManagementSystem.Controllers
             if (roles.Contains("Manager") && !roles.Contains("HR") && !roles.Contains("Admin"))
             {
                 //query = query.Where(lr => lr.Employee.ManagerId == user.Id);
-                query = query.Where(lr => lr.ApproverId == user.Id);
+                query = query.Where(lr => lr.ApproverId == user.Id && lr.EmployeeId != user.Id);
             }
 
             var requests = await query
@@ -162,10 +199,22 @@ namespace LeaveManagementSystem.Controllers
         [Authorize(Roles = "Manager,HR,Admin")]
         public async Task<IActionResult> Approve(int id, string comments = "")
         {
-            var leaveRequest = await _context.LeaveRequests.FindAsync(id);
+            //var leaveRequest = await _context.LeaveRequests.FindAsync(id);
+            var leaveRequest = await _context.LeaveRequests
+                .Include(lr => lr.Employee)
+                .FirstOrDefaultAsync(lr => lr.Id == id);
             if (leaveRequest != null)
             {
                 var user = await _userManager.GetUserAsync(User);
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var applicantRoles = await _userManager.GetRolesAsync(leaveRequest.Employee);
+
+                if (applicantRoles.Contains("Manager") && roles.Contains("Manager") && !roles.Contains("Admin") && !roles.Contains("HR"))
+                {
+                    TempData["ErrorMessage"] = "Manager leave request can only be rejected by Admin or HR.";
+                    return RedirectToAction(nameof(PendingRequests));
+                }
 
                 leaveRequest.Status = LeaveStatus.Approved;
                 leaveRequest.ApprovedBy = user.Id;
@@ -184,10 +233,24 @@ namespace LeaveManagementSystem.Controllers
         [Authorize(Roles = "Manager,HR,Admin")]
         public async Task<IActionResult> Reject(int id, string comments = "")
         {
-            var leaveRequest = await _context.LeaveRequests.FindAsync(id);
+            //var leaveRequest = await _context.LeaveRequests.FindAsync(id);
+
+            var leaveRequest = await _context.LeaveRequests
+                .Include(lr => lr.Employee)
+                .FirstOrDefaultAsync(lr => lr.Id == id);
+
             if (leaveRequest != null)
             {
                 var user = await _userManager.GetUserAsync(User);
+
+                var roles = await _userManager.GetRolesAsync(user);
+
+                var applicantRoles = await _userManager.GetRolesAsync(leaveRequest.Employee);
+                if (applicantRoles.Contains("Manager") && roles.Contains("Manager") && !roles.Contains("Admin") && !roles.Contains("HR"))
+                {
+                    TempData["ErrorMessage"] = "Manager leave request can only be rejected by Admin or HR.";
+                    return RedirectToAction(nameof(PendingRequests));
+                }
 
                 leaveRequest.Status = LeaveStatus.Rejected;
                 leaveRequest.ApprovedBy = user.Id;

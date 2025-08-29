@@ -37,9 +37,14 @@ namespace LeaveManagementSystem.Controllers
                 .Where(lr => lr.EmployeeId == user.Id)
                 .CountAsync();
 
+            var pendingApprovals = await _context.LeaveRequests
+                .Where(lr => lr.ApproverId == user.Id  && lr.Status == LeaveStatus.Pending)
+                .CountAsync();
+
             ViewBag.TotalEmployees = totalEmployees;
             ViewBag.PendingRequests = pendingRequests;
             ViewBag.MyRequests = myRequests;
+            ViewBag.PendingApprovals = pendingApprovals;
 
             return View();
         }
