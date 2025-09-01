@@ -4,8 +4,10 @@ using LeaveManagementSystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+using System.Text;
+
 
 namespace LeaveManagementSystem.Controllers
 {
@@ -32,6 +34,12 @@ namespace LeaveManagementSystem.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            // new line add.
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                // User is already logged in, redirect to Home
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -124,25 +132,125 @@ namespace LeaveManagementSystem.Controllers
             return View(model);
         }
 
+        public IActionResult VerifyEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> VerifyEmail(VerifyEmailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(model.Email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Something is wrong!");
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("ChangePassword", "Account", new { username = user.UserName });
+
+                }
+            }
+            return View(model);
+
+        }
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {                    
+                    return RedirectToAction("ForgotPasswordConfirmation");
+                }
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action("ResetPassword", "Account",
+                    new { token, email = model.Email }, Request.Scheme);
+
+                await _emailSender.EmailSendAsync(model.Email, "Reset Password",
+               $"Please reset your password by clicking <a href='{callbackUrl}'>here</a>.");
+
+               return RedirectToAction("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token = null, string email = null)
+        {
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid password reset token.");
+                return View("Error");
+            }
+
+            var model = new ResetPasswordViewModel
+            {
+                Token = token,
+                Email = email
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
+            }
+
+            // Decode the token
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token));
+            decodedToken = model.Token;
+            // Reset the password
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Reset Password updated successfully!";
+                //_logger.LogInformation($"Password reset successful for user {model.Email}");
+                return RedirectToAction("Login", "Account");
+            }
+            
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
-    }
-
-    public class LoginViewModel
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        public bool RememberMe { get; set; }
     }
 }
 

@@ -29,7 +29,8 @@ namespace LeaveManagementSystem.Repository.Service
                 {
                     From = new MailAddress(getEmailSetting.From),
                     Subject = Subject,
-                    Body = message
+                    Body = message,
+                    IsBodyHtml = true
                 };
                 mailMessage.To.Add(email);
                 SmtpClient smtpClient = new SmtpClient(getEmailSetting.SmtpServer)
