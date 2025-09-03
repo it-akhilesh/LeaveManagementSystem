@@ -25,10 +25,9 @@ namespace LeaveManagementSystem.ViewModels
         [Required]
         [StringLength(50)]
         public string LastName { get; set; }
-
-        [Required]
-        [StringLength(20)]
-        public string EmployeeId { get; set; }
+       
+        public string? EmployeeId { get; set; }
+        
 
         [Required]
         public string Role { get; set; }

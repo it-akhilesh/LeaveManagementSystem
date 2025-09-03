@@ -1,4 +1,5 @@
-﻿using LeaveManagementSystem.Models;
+﻿using LeaveManagementSystem.Data;
+using LeaveManagementSystem.Models;
 using LeaveManagementSystem.Repository.Interface;
 using LeaveManagementSystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -16,19 +17,23 @@ namespace LeaveManagementSystem.Controllers
         private readonly UserManager<Employee> _userManager;
         private readonly SignInManager<Employee> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
+
         private IEmailSender _emailSender;
 
         public AccountController(
             UserManager<Employee> userManager,
             SignInManager<Employee> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
 
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [HttpGet]
@@ -64,10 +69,27 @@ namespace LeaveManagementSystem.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Register()
-        {
-            ViewBag.Roles = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+        {            
+                var lastEmployee = await _context.Employees
+                   .OrderByDescending(u => u.EmployeeId)
+                   .FirstOrDefaultAsync();
+
+                int newId = 1;
+                if (lastEmployee != null && lastEmployee.EmployeeId.StartsWith("EMP"))
+                {
+                    var lastIdPart = lastEmployee.EmployeeId.Substring(3);
+                    if (int.TryParse(lastIdPart, out int lastId))
+                    {
+                        newId = lastId + 1;
+                    }
+                }
+                string newEmployeeId = $"EMP{newId:D4}";
+                
+            
+                ViewBag.Roles = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
 
             var managers = await _userManager.GetUsersInRoleAsync("Manager");
+
             var model = new RegisterViewModel()
             {
                 ForManager = managers
@@ -75,7 +97,10 @@ namespace LeaveManagementSystem.Controllers
                             {
                                 Value = u.Id,
                                 Text = $"{u.FirstName} {u.LastName} - ({u.Email})"
-                            }).ToList()
+                            }).ToList(),
+                EmployeeId = newEmployeeId,
+                
+                
             };
 
             return View(model);
@@ -86,16 +111,30 @@ namespace LeaveManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                var lastEmployee = await _context.Employees
+                   .OrderByDescending(u => u.EmployeeId)
+                   .FirstOrDefaultAsync();
+                int newId = 1;
+                if (lastEmployee != null && lastEmployee.EmployeeId.StartsWith("EMP"))
+                {
+                    var lastIdPart = lastEmployee.EmployeeId.Substring(3);
+                    if (int.TryParse(lastIdPart, out int lastId))
+                    {
+                        newId = lastId + 1;
+                    }
+                }
+                string newEmployeeId = $"EMP{newId:D4}";
+
                 var user = new Employee
                 {
                     UserName = model.Email,
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    EmployeeId = model.EmployeeId,
+                    EmployeeId = newEmployeeId,
                     ManagerId = model.ManagerId,
                     DateOfJoining = DateTime.Now,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
