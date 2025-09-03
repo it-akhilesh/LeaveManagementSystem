@@ -1,5 +1,6 @@
 ﻿using LeaveManagementSystem.Data;
 using LeaveManagementSystem.Models;
+using LeaveManagementSystem.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace LeaveManagementSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var dashboardViewModel = new DashboardViewModel();
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -41,12 +43,41 @@ namespace LeaveManagementSystem.Controllers
                 .Where(lr => lr.ApproverId == user.Id  && lr.Status == LeaveStatus.Pending)
                 .CountAsync();
 
+            
+
+            if(roles.FirstOrDefault() == "Admin" )
+            {
+                var oneWeekAgo = DateTime.Now.AddDays(-7);
+                var activityInfo = await (from l in _context.LeaveRequests
+                                          join u in _context.Users on l.EmployeeId equals u.Id
+                                          join ur in _context.UserRoles on u.Id equals ur.UserId
+                                          join r in _context.Roles on ur.RoleId equals r.Id
+                                          where l.RequestDate >= oneWeekAgo
+                                         && (r.Name == "Manager" || r.Name == "Employee")
+                                          orderby l.RequestDate,l.Id ascending
+                                          select new LeaveCreationActivity
+                                          {
+                                              Id = l.Id,
+                                              Name = l.Employee.FirstName + " " + l.Employee.LastName,
+                                              EmailId = l.Employee.Email,
+                                              Designation = r.Name,   // from AspNetRoles
+                                              Date = l.RequestDate,
+                                              Status = l.Status
+                                          })
+                                  .ToListAsync();
+                dashboardViewModel.leaveCreationActivities = activityInfo;
+
+            }
+            
+            
+
             ViewBag.TotalEmployees = totalEmployees;
             ViewBag.PendingRequests = pendingRequests;
             ViewBag.MyRequests = myRequests;
             ViewBag.PendingApprovals = pendingApprovals;
-
-            return View();
+            
+            
+            return View(dashboardViewModel);
         }
     }
 }
