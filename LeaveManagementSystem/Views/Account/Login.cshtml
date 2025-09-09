@@ -1,4 +1,4 @@
-﻿@using LeaveManagementSystem.ViewModels;
+﻿@* @using LeaveManagementSystem.ViewModels;
 @model LoginViewModel
 @{
     ViewData["Title"] = "Login";
@@ -55,6 +55,54 @@
                     <small class="text-muted">Admin: admin@company.com / Admin@123</small>
                 </div>
             </div>
+        </div>
+    </div>
+</div> *@
+
+@using LeaveManagementSystem.ViewModels
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="d-flex align-items-center justify-content-center vh-100 bg-light">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 400px;">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold text-primary">Leave Management System</h3>
+            <p class="text-muted">Login to continue</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-semibold">Email</label>
+                <input asp-for="Email" class="form-control form-control-lg rounded-3" placeholder="Enter email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-semibold">Password</label>
+                <input asp-for="Password" type="password" class="form-control form-control-lg rounded-3" placeholder="Enter password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label class="form-check-label">Remember Me</label>
+                </div>
+                <a asp-action="ForgotPassword" class="text-decoration-none small text-primary fw-semibold">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold rounded-3">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Login
+            </button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <p class="text-muted small mb-1">Demo Credentials:</p>
+            <span class="badge bg-secondary">Admin: admin@company.com / Admin@123</span>
         </div>
     </div>
 </div>

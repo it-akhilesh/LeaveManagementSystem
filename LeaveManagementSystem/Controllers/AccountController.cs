@@ -111,19 +111,19 @@ namespace LeaveManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var lastEmployee = await _context.Employees
-                   .OrderByDescending(u => u.EmployeeId)
-                   .FirstOrDefaultAsync();
-                int newId = 1;
-                if (lastEmployee != null && lastEmployee.EmployeeId.StartsWith("EMP"))
-                {
-                    var lastIdPart = lastEmployee.EmployeeId.Substring(3);
-                    if (int.TryParse(lastIdPart, out int lastId))
-                    {
-                        newId = lastId + 1;
-                    }
-                }
-                string newEmployeeId = $"EMP{newId:D4}";
+                //var lastEmployee = await _context.Employees
+                //   .OrderByDescending(u => u.EmployeeId)
+                //   .FirstOrDefaultAsync();
+                //int newId = 1;
+                //if (lastEmployee != null && lastEmployee.EmployeeId.StartsWith("EMP"))
+                //{
+                //    var lastIdPart = lastEmployee.EmployeeId.Substring(3);
+                //    if (int.TryParse(lastIdPart, out int lastId))
+                //    {
+                //        newId = lastId + 1;
+                //    }
+                //}
+                //string newEmployeeId = $"EMP{newId:D4}";
 
                 var user = new Employee
                 {
@@ -131,7 +131,7 @@ namespace LeaveManagementSystem.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    EmployeeId = newEmployeeId,
+                    EmployeeId = model.EmployeeId,
                     ManagerId = model.ManagerId,
                     DateOfJoining = DateTime.Now,
                     EmailConfirmed = true,
