@@ -1,4 +1,4 @@
-﻿
+﻿@* 
 @model LeaveManagementSystem.ViewModels.LeaveRequestViewModel
 @{
     ViewData["Title"] = "Apply for Leave";
@@ -60,6 +60,124 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startDate = document.getElementById('StartDate');
+            const endDate = document.getElementById('EndDate');
+
+            startDate.addEventListener('change', function () {
+                endDate.min = startDate.value;
+            });
+        });
+    </script>
+}
+ *@
+
+@model LeaveManagementSystem.ViewModels.LeaveRequestViewModel
+@{
+    ViewData["Title"] = "Apply for Leave";
+}
+
+<div class="apply-leave-wrapper d-flex align-items-center justify-content-center min-vh-100">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0 rounded-4">
+            <!-- Gradient Header -->
+            <div class="card-header text-white text-center py-3"
+                 style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                <h4 class="fw-bold mb-0">
+                    <i class="bi bi-calendar-check me-2"></i> Apply for Leave
+                </h4>
+            </div>
+
+            <div class="card-body p-4 bg-white rounded-bottom-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <!-- Dates -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="StartDate" class="form-label fw-semibold">
+                                    <i class="bi bi-calendar-date me-1"></i> Start Date
+                                </label>
+                                <input asp-for="StartDate" class="form-control shadow-sm" type="date" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="EndDate" class="form-label fw-semibold">
+                                    <i class="bi bi-calendar-date me-1"></i> End Date
+                                </label>
+                                <input asp-for="EndDate" class="form-control shadow-sm" type="date" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Type -->
+                    <div class="form-group mb-3">
+                        <label asp-for="LeaveType" class="form-label fw-semibold">
+                            <i class="bi bi-list-ul me-1"></i> Leave Type
+                        </label>
+                        <select asp-for="LeaveType" class="form-select shadow-sm"
+                                asp-items="Html.GetEnumSelectList<LeaveManagementSystem.Models.LeaveType>()">
+                            <option value="">Select Leave Type</option>
+                        </select>
+                        <span asp-validation-for="LeaveType" class="text-danger"></span>
+                    </div>
+
+                    <!-- Approver -->
+                    <div class="form-group mb-3">
+                        <label asp-for="ApproverId" class="form-label fw-semibold">
+                            <i class="bi bi-person-check me-1"></i> For Approver
+                        </label>
+                        <select asp-for="ApproverId" class="form-select shadow-sm" asp-items="Model.ForApproval">
+                            <option value="">Select Approver</option>
+                        </select>
+                        <span asp-validation-for="ApproverId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="form-group mb-4">
+                        <label asp-for="Reason" class="form-label fw-semibold">
+                            <i class="bi bi-pencil-square me-1"></i> Reason
+                        </label>
+                        <textarea asp-for="Reason" class="form-control shadow-sm" rows="4"
+                                  placeholder="Enter reason for leave"></textarea>
+                        <span asp-validation-for="Reason" class="text-danger"></span>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-send-fill me-1"></i> Submit Request
+                        </button>
+                        <a asp-action="MyRequests" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-x-circle me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    /* 🔹 Full background gradient */
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .apply-leave-wrapper {
+        padding: 40px 20px;
+    }
+</style>
 
 @section Scripts {
     <script>

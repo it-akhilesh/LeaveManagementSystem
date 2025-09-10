@@ -1,4 +1,4 @@
-﻿@model LeaveManagementSystem.ViewModels.EmployeeProfileViewModel
+﻿@* @model LeaveManagementSystem.ViewModels.EmployeeProfileViewModel
 @{
     ViewData["Title"] = "Employee Profile";
 }
@@ -91,4 +91,123 @@
             </div>
         </div>
     </div>
+</div> *@
+
+@model LeaveManagementSystem.ViewModels.EmployeeProfileViewModel
+@{
+    ViewData["Title"] = "Employee Profile";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <!-- Card Header -->
+                <div class="card-header text-white text-center py-4"
+                     style="background: linear-gradient(135deg, #4facfe, #00f2fe); border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                    <h3 class="fw-bold mb-0"><i class="bi bi-person-circle me-2"></i> Employee Profile</h3>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body p-4">
+                    <form asp-action="Profile" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                        <input asp-for="Id" type="hidden" />
+
+                        <!-- First & Last Name -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label fw-semibold"></label>
+                                <input asp-for="FirstName" class="form-control form-control-lg" placeholder="Enter first name" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label fw-semibold"></label>
+                                <input asp-for="LastName" class="form-control form-control-lg" placeholder="Enter last name" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Email & Phone -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label fw-semibold"></label>
+                                <input asp-for="Email" class="form-control form-control-lg" readonly />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
+                                <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="Enter phone number" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Employee Id & DOJ -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EmployeeId" class="form-label fw-semibold"></label>
+                                <input asp-for="EmployeeId" class="form-control form-control-lg" readonly />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DateOfJoining" class="form-label fw-semibold"></label>
+                                <input asp-for="DateOfJoining" class="form-control form-control-lg" type="date" readonly />
+                            </div>
+                        </div>
+
+                        <!-- Department & Designation -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Department" class="form-label fw-semibold"></label>
+                                <input asp-for="Department" class="form-control form-control-lg" placeholder="Enter department" />
+                                <span asp-validation-for="Department" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Designation" class="form-label fw-semibold"></label>
+                                <input asp-for="Designation" class="form-control form-control-lg" placeholder="Enter designation" />
+                                <span asp-validation-for="Designation" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label fw-semibold"></label>
+                            <textarea asp-for="Address" class="form-control form-control-lg" rows="3" placeholder="Enter your address"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
+                                <i class="bi bi-arrow-left-circle me-1"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-gradient btn-lg px-4 rounded-pill">
+                                <i class="bi bi-save me-1"></i> Update Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Custom Styles -->
+<style>
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        color: #fff;
+        transition: 0.3s;
+    }
+
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    body {
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        min-height: 100vh;
+    }
+</style>
