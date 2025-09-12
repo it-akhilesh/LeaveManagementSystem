@@ -108,7 +108,7 @@ else
 <div class="container py-5">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">
+        <h2 class="fw-bold text-primary text-white">
             <i class="bi bi-list-check me-2"></i> My Leave Requests
         </h2>
         <a asp-action="Create" class="btn btn-gradient px-4">
@@ -221,6 +221,11 @@ else
 <!-- Custom Styles -->
 <style>
     /* Gradient buttons */
+    body {
+        background: linear-gradient(135deg, #667eea, #00f2fe);
+        margin: 0;
+        min-height: 100vh;
+    }
     .btn-gradient {
         background: linear-gradient(135deg, #667eea, #764ba2);
         color: #fff;
