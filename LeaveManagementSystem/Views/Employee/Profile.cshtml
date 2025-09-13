@@ -101,7 +101,7 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card shadow-lg border-0 rounded-4">
+            <div class="card shadow-lg border-0 rounded-4 border-override">
                 <!-- Card Header -->
                 <div class="card-header text-white text-center py-4"
                      style="background: linear-gradient(135deg, #4facfe, #00f2fe); border-top-left-radius: 15px; border-top-right-radius: 15px;">
@@ -197,6 +197,10 @@
         border: none;
         color: #fff;
         transition: 0.3s;
+        
+    }
+    .border-override{
+        border-radius: 1.25rem !important;
     }
 
         .btn-gradient:hover {
@@ -207,7 +211,8 @@
         }
 
     body {
-        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        background: linear-gradient(135deg, #667eea, #00f2fe);
+        margin: 0;
         min-height: 100vh;
     }
 </style>

@@ -1,4 +1,4 @@
-﻿@* 
+﻿@*
 @model IEnumerable<LeaveManagementSystem.ViewModels.LeaveRequestViewModel>
 @{
     ViewData["Title"] = "My Leave Requests";
@@ -34,7 +34,7 @@
                                 <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
                                 <td>@item.LeaveDays</td>
                                 <td>@item.LeaveType</td>
-                                
+
                                 <td>
                                     @switch (item.Status)
                                     {
@@ -74,7 +74,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Leave Type:</strong> @item.LeaveType</p>                        
+                        <p><strong>Leave Type:</strong> @item.LeaveType</p>
                         <p><strong>Duration:</strong> @item.StartDate.ToString("dd/MM/yyyy") to @item.EndDate.ToString("dd/MM/yyyy") (@item.LeaveDays days)</p>
                         <p><strong>Reason:</strong> @item.Reason</p>
                         <p><strong>Status:</strong> @item.Status</p>
@@ -107,14 +107,21 @@ else
 
 <div class="container py-5">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary text-white">
-            <i class="bi bi-list-check me-2"></i> My Leave Requests
-        </h2>
-        <a asp-action="Create" class="btn btn-gradient px-4">
-            <i class="bi bi-plus-circle me-1"></i> Apply for Leave
-        </a>
+
+    <div class="col-lg-12">
+        <div class="card shadow-lg border-0 bg-glass">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary ">
+                    <i class="bi bi-list-check me-2"></i> My Leave Requests
+                </h2>
+                <a asp-action="Create" class="btn btn-gradient px-4">
+                    <i class="bi bi-plus-circle me-1"></i> Apply for Leave
+                </a>
+            </div>
+        </div>
     </div>
+
+
 
     @if (Model.Any())
     {
@@ -226,6 +233,7 @@ else
         margin: 0;
         min-height: 100vh;
     }
+
     .btn-gradient {
         background: linear-gradient(135deg, #667eea, #764ba2);
         color: #fff;
