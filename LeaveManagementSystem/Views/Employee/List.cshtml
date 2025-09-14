@@ -62,6 +62,12 @@ else
         min-height: 100vh;
     }
 
+    .border-color{
+        background: linear-gradient(135deg, #36d1dc, #5b86e5);
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
     h2 {
         font-weight: 600;
         color: #fff;
@@ -108,51 +114,60 @@ else
 </style>
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Employee List</h2>
-        <a asp-controller="Account" asp-action="Register" class="btn btn-primary shadow">+ Add Employee</a>
-    </div>
-
-    @if (Model.Any())
-    {
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Employee ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Department</th>
-                                <th>Designation</th>
-                                <th>Date of Joining</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var employee in Model)
-                            {
-                                <tr>
-                                    <td>@employee.EmployeeId</td>
-                                    <td>@employee.FirstName @employee.LastName</td>
-                                    <td>@employee.Email</td>
-                                    <td>@employee.Department</td>
-                                    <td>@employee.Designation</td>
-                                    <td>@employee.DateOfJoining.ToString("dd/MM/yyyy")</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+    <div class="col-lg-12">
+        <div class="card shadow-lg border-0 ">
+            <div class="card-header text-white border-color">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Employee List</h2>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary shadow">+ Add Employee</a>
                 </div>
             </div>
+            @if (Model.Any())
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>🆔 Employee ID</th>
+                                        <th>👤 Name</th>
+                                        <th>📧 Email</th>
+                                        <th>🏢 Department</th>
+                                        <th>💼 Designation</th>
+                                        <th>📅 Date of Joining</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var employee in Model)
+                                    {
+                                        <tr>
+                                            <td>@employee.EmployeeId</td>
+                                            <td>@employee.FirstName @employee.LastName</td>
+                                            <td>@employee.Email</td>
+                                            <td>@employee.Department</td>
+                                            <td>@employee.Designation</td>
+                                            <td>@employee.DateOfJoining.ToString("dd/MM/yyyy")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-white mt-5">
+                    <p>No employees found.</p>
+                </div>
+            }
         </div>
-    }
-    else
-    {
-        <div class="text-center text-white mt-5">
-            <p>No employees found.</p>
-        </div>
-    }
+        
+    </div>
+    
+
+    
 </div>
 
 

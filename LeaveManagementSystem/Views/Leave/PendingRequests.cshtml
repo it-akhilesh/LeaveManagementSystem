@@ -115,8 +115,8 @@ else
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow-lg border-0 rounded-4 bg-glass">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0 rounded-4 bg-glass border-override">
                 <div class="card-header text-white text-center py-4"
                      style="background: linear-gradient(135deg, #36d1dc, #5b86e5); border-top-left-radius: 15px; border-top-right-radius: 15px;">
                     <h3 class="fw-bold mb-0"><i class="bi bi-hourglass-split me-2"></i> Pending Leave Requests</h3>
@@ -250,7 +250,9 @@ else
         margin: 0;
         min-height: 100vh;
     }
-
+    .border-override{
+        border-radius: 1.25rem !important;
+    }
     .bg-glass {
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(12px);
