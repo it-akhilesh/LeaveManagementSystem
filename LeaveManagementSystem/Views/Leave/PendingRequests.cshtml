@@ -1,114 +1,4 @@
-﻿@* @model IEnumerable<LeaveManagementSystem.ViewModels.LeaveRequestViewModel>
-@{
-    ViewData["Title"] = "Pending Leave Requests";
-}
-
-<h2>Pending Leave Requests</h2>
-
-@if (Model.Any())
-{
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Days</th>
-                            <th>Type</th>
-                            <th>Applied On</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.EmployeeName</td>
-                                <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
-                                <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
-                                <td>@item.LeaveDays</td>
-                                <td>@item.LeaveType</td>
-                                
-                                <td>@item.RequestDate.ToString("dd/MM/yyyy")</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#approvalModal@(item.Id)">
-                                        Review
-                                    </button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    @foreach (var item in Model)
-    {
-        <!-- Approval Modal -->
-        <div class="modal fade" id="approvalModal@(item.Id)" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Review Leave Request - @item.EmployeeName</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Employee:</strong> @item.EmployeeName</p>
-                        <p><strong>Leave Type:</strong> @item.LeaveType</p>
-                        
-                        <p><strong>Duration:</strong> @item.StartDate.ToString("dd/MM/yyyy") to @item.EndDate.ToString("dd/MM/yyyy")</p>
-                        <p><strong>Total Days:</strong> @item.LeaveDays</p>
-                        <p><strong>Reason:</strong> @item.Reason</p>
-
-                        <div class="form-group mt-3">
-                            <label for="comments@(item.Id)" class="form-label">Comments (Optional):</label>
-                            <textarea id="comments@(item.Id)" class="form-control" rows="3" placeholder="Add your comments..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <form asp-action="Approve" method="post" class="d-inline">
-                            <input type="hidden" name="id" value="@item.Id" />
-                            <input type="hidden" name="comments" id="approveComments@(item.Id)" />
-                            <button type="submit" class="btn btn-success" onclick="setComments(@item.Id, 'approve')">Approve</button>
-                        </form>
-                        <form asp-action="Reject" method="post" class="d-inline">
-                            <input type="hidden" name="id" value="@item.Id" />
-                            <input type="hidden" name="comments" id="rejectComments@(item.Id)" />
-                            <button type="submit" class="btn btn-danger" onclick="setComments(@item.Id, 'reject')">Reject</button>
-                        </form>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-}
-else
-{
-    <div class="text-center">
-        <p>No pending leave requests.</p>
-    </div>
-}
-
-@section Scripts {
-    <script>
-        function setComments(id, action) {
-            const comments = document.getElementById('comments' + id).value;
-            if (action === 'approve') {
-                document.getElementById('approveComments' + id).value = comments;
-            } else {
-                document.getElementById('rejectComments' + id).value = comments;
-            }
-        }
-    </script>
-}
- *@ 
-
-@model IEnumerable<LeaveManagementSystem.ViewModels.LeaveRequestViewModel>
+﻿@model IEnumerable<LeaveManagementSystem.ViewModels.LeaveRequestViewModel>
 @{
     ViewData["Title"] = "Pending Leave Requests";
 }
@@ -117,9 +7,12 @@ else
     <div class="row justify-content-center">
         <div class="col-lg-12">
             <div class="card shadow-lg border-0 rounded-4 bg-glass border-override">
-                <div class="card-header text-white text-center py-4"
-                     style="background: linear-gradient(135deg, #36d1dc, #5b86e5); border-top-left-radius: 15px; border-top-right-radius: 15px;">
-                    <h3 class="fw-bold mb-0"><i class="bi bi-hourglass-split me-2"></i> Pending Leave Requests</h3>
+                <div class="card-header text-white text-center py-4 model-header-gradient">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="fw-bold mb-0">
+                            <i class="bi bi-hourglass-split me-2"></i> Pending Leave Requests
+                        </h2>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -178,9 +71,8 @@ else
 {
     <div class="modal fade" id="approvalModal@(item.Id)" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content shadow-lg border-0 rounded-4">
-                <div class="modal-header text-white"
-                     style="background: linear-gradient(135deg, #5b86e5, #36d1dc);">
+            <div class="modal-content shadow-lg border-0 rounded-4 border-override">
+                <div class="modal-header text-white model-header-gradient ">
                     <h5 class="modal-title"><i class="bi bi-check2-square me-2"></i> Review Leave Request - @item.EmployeeName</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -243,31 +135,3 @@ else
     </script>
 }
 
-<!-- Custom Styles -->
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea, #00f2fe);
-        margin: 0;
-        min-height: 100vh;
-    }
-    .border-override{
-        border-radius: 1.25rem !important;
-    }
-    .bg-glass {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(12px);
-    }
-
-    .btn-gradient {
-        background: linear-gradient(135deg, #36d1dc, #5b86e5);
-        border: none;
-        color: #fff;
-        transition: 0.3s;
-    }
-
-        .btn-gradient:hover {
-            background: linear-gradient(135deg, #5b86e5, #36d1dc);
-            transform: translateY(-2px);
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-        }
-</style>

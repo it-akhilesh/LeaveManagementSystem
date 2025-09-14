@@ -1,134 +1,28 @@
-﻿@* @model IEnumerable<LeaveManagementSystem.ViewModels.EmployeeProfileViewModel>
+﻿@model IEnumerable<LeaveManagementSystem.ViewModels.EmployeeProfileViewModel>
 @{
     ViewData["Title"] = "Employee List";
 }
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Employee List</h2>
-    <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Add New Employee</a>
-</div>
-
-@if (Model.Any())
-{
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Department</th>
-                            <th>Designation</th>
-                            <th>Date of Joining</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var employee in Model)
-                        {
-                            <tr>
-                                <td>@employee.EmployeeId</td>
-                                <td>@employee.FirstName @employee.LastName</td>
-                                <td>@employee.Email</td>
-                                <td>@employee.Department</td>
-                                <td>@employee.Designation</td>
-                                <td>@employee.DateOfJoining.ToString("dd/MM/yyyy")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="text-center">
-        <p>No employees found.</p>
-    </div>
-}
- *@
-
- @model IEnumerable<LeaveManagementSystem.ViewModels.EmployeeProfileViewModel>
-@{
-    ViewData["Title"] = "Employee List";
-}
-
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea, #00f2fe);
-        margin: 0;
-        min-height: 100vh;
-    }
-
-    .border-color{
-        background: linear-gradient(135deg, #36d1dc, #5b86e5);
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-    }
-
-    h2 {
-        font-weight: 600;
-        color: #fff;
-    }
-
-    .card {
-        border-radius: 15px;
-        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-        background: #fff;
-    }
-
-    .btn-primary {
-        background: linear-gradient(90deg, #667eea, #764ba2);
-        border: none;
-        border-radius: 25px;
-        padding: 8px 18px;
-        font-weight: 500;
-        transition: 0.3s ease-in-out;
-    }
-
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #764ba2, #667eea);
-            transform: scale(1.05);
-        }
-
-    table thead {
-        background: #667eea;
-        color: white;
-    }
-
-    table tbody tr {
-        transition: 0.3s;
-    }
-
-        table tbody tr:hover {
-            background: #f1f5ff;
-            transform: scale(1.01);
-        }
-
-    .table {
-        border-radius: 12px;
-        overflow: hidden;
-    }
-</style>
 
 <div class="container py-5">
-    <div class="col-lg-12">
-        <div class="card shadow-lg border-0 ">
-            <div class="card-header text-white border-color">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Employee List</h2>
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary shadow">+ Add Employee</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0 rounded-4 bg-glass border-override ">
+                <div class="card-header text-white text-center py-4 model-header-gradient">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="fw-bold mb-0">
+                            <i class="bi bi-list-check me-2"></i> Employee List
+                        </h2>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-gradient px-4">
+                            <i class="bi bi-plus-circle me-1"></i> Add Employee
+                        </a>
+                    </div>
                 </div>
-            </div>
-            @if (Model.Any())
-            {
-                <div class="card">
-                    <div class="card-body">
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
                         <div class="table-responsive">
-                            <table class="table align-middle">
-                                <thead>
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
                                     <tr>
                                         <th>🆔 Employee ID</th>
                                         <th>👤 Name</th>
@@ -153,21 +47,20 @@ else
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <h5 class="text-muted">✨ No pending leave requests.</h5>
+                        </div>
+                    }
                 </div>
-            }
-            else
-            {
-                <div class="text-center text-white mt-5">
-                    <p>No employees found.</p>
-                </div>
-            }
-        </div>
-        
-    </div>
-    
+            </div>
 
-    
+        </div>
+    </div>
+
+
 </div>
 
 

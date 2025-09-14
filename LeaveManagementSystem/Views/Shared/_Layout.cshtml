@@ -6,17 +6,16 @@
     <title>@ViewData["Title"] - Leave Management System</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Common.css" asp-append-version="true" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-    @* <link rel="stylesheet" href="~/css/LeaveSheet.css" asp-append-version="true" /> *@
-    @* <link rel="stylesheet" href="~/LeaveManagementSystem.styles.css" asp-append-version="true" /> *@
+    
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                @* <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">LeaveManagementSystem</a> *@
                 <img src="~/images/3d-render-blue-gift-box-with-gold-ribbon-package.jpg" alt="Logo" width="40" height="40" class="d-inline-block align-top" />
                 LeaveManagementSystem
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -84,12 +83,6 @@
             @RenderBody()
         </main>
     </div>
-
-    @* <footer class="border-top footer text-muted">
-    <div class="container">
-    &copy; 2025 - LeaveManagementSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-    </footer> *@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
