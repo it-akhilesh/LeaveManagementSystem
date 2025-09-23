@@ -4,6 +4,7 @@ using LeaveManagementSystem.Repository.Interface;
 using LeaveManagementSystem.Repository.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace LeaveManagementSystem
 {
@@ -18,7 +19,9 @@ namespace LeaveManagementSystem
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("LeaveManagement")));
-
+            builder.Services.AddDataProtection()
+                .PersistKeysToDbContext<ApplicationDbContext>() // if you already have EF Core set up
+                .SetApplicationName("LeaveManagementSystem");
             builder.Services.AddTransient<IEmailSender, EmailSender>();
 
             builder.Services.AddIdentity<Employee, IdentityRole>(options =>
@@ -54,7 +57,7 @@ namespace LeaveManagementSystem
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
 
             // Seed the database
