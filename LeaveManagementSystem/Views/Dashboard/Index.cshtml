@@ -7,7 +7,7 @@
     <div class="col-md-12">
         <h2>Welcome, @ViewBag.UserName!</h2>
         <p class="text-muted">Role: @ViewBag.UserRole</p>
-    </div>
+    </div>          
 </div>
 
 <div class="row mt-4">
@@ -198,8 +198,8 @@
             {
 
 
-                <div class="col-md-8 mx-auto">
-                        <div class="card">
+                @* <div class="col-md-8 mx-auto">
+                    <div class="card action-card text-center shadow-sm border-0 rounded-5 p-4 h-100">
                             <div class="card-header">
                                 <h5>Recent Activity</h5>
                             </div>
@@ -245,11 +245,57 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-
                     </div>
 
-                
+                </div> *@
+
+                <div class="col-md-8 mx-auto">
+                    <div class="card shadow-sm border-0 rounded-5 overflow-hidden">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-4">Recent Activity</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover table-bordered mb-3">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>🪪Id</th>
+                                        <th>👤Name</th>
+                                        <th>📧Email Id</th>
+                                        <th>💼Designation</th>
+                                        <th>📅Request Date</th>
+                                        <th>ℹ️Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.leaveCreationActivities)
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.EmailId</td>
+                                            <td>@item.Designation</td>
+                                            <td>@item.Date.ToString("dd-MM-yyyy")</td>
+                                            <td>
+                                                @switch (item.Status)
+                                                {
+                                                    case LeaveManagementSystem.Models.LeaveStatus.Pending:
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                        break;
+                                                    case LeaveManagementSystem.Models.LeaveStatus.Approved:
+                                                        <span class="badge bg-success">Approved</span>
+                                                        break;
+                                                    case LeaveManagementSystem.Models.LeaveStatus.Rejected:
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                        break;
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
        
