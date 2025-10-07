@@ -18,7 +18,8 @@ namespace LeaveManagementSystem
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("LeaveManagement")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("LeaveManagement")
+            ));
             
             builder.Services.AddTransient<IEmailSender, EmailSender>();
 
@@ -37,6 +38,11 @@ namespace LeaveManagementSystem
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Database.Migrate();  // <-- Creates DB and applies migrations
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
