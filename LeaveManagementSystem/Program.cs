@@ -20,7 +20,7 @@ namespace LeaveManagementSystem
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("LeaveManagement")
             ));
-            
+
             builder.Services.AddTransient<IEmailSender, EmailSender>();
 
             builder.Services.AddIdentity<Employee, IdentityRole>(options =>
