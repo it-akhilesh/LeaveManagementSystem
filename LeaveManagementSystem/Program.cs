@@ -37,6 +37,16 @@ namespace LeaveManagementSystem
 
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
             {
@@ -54,6 +64,7 @@ namespace LeaveManagementSystem
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseRouting();
 
