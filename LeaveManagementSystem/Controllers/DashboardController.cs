@@ -39,14 +39,26 @@ namespace LeaveManagementSystem.Controllers
                 .Where(lr => lr.EmployeeId == user.Id)
                 .CountAsync();
 
-            var pendingApprovals = await _context.LeaveRequests
-                .Where(lr => lr.ApproverId == user.Id  && lr.Status == LeaveStatus.Pending)
-                .CountAsync();
+            int pendingApprovals;
 
-            
-
-            if(roles.FirstOrDefault() == "Admin" )
+            if (roles.FirstOrDefault() == "Admin")
             {
+                
+                pendingApprovals = await _context.LeaveRequests
+                    .Where(lr => lr.Status == LeaveStatus.Pending)
+                    .CountAsync();
+            }
+            else
+            {
+                
+                pendingApprovals = await _context.LeaveRequests
+                    .Where(lr => lr.ApproverId == user.Id && lr.Status == LeaveStatus.Pending)
+                    .CountAsync();
+            }
+
+            if (roles.FirstOrDefault() == "Admin" )
+            {
+
                 var oneWeekAgo = DateTime.Now.AddDays(-7);
                 var activityInfo = await (from l in _context.LeaveRequests
                                           join u in _context.Users on l.EmployeeId equals u.Id
