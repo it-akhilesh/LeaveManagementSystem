@@ -57,20 +57,16 @@ namespace LeaveManagementSystem.Controllers
 
         public async Task<IActionResult> Create()
         {
-            //var model = new LeaveRequestViewModel
-            //{
-            //    ForApproval = new List<SelectListItem>
-            //    {
-            //        new SelectListItem { Value = "1", Text = "User1" },
-            //        new SelectListItem { Value = "2", Text = "User2" },
-            //        new SelectListItem { Value = "3", Text = "User3" }
-            //    }
-            //};
+            
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
 
 
-            var model = new LeaveRequestViewModel();
+            var model = new LeaveRequestViewModel()
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now
+            };
 
             if (roles.Contains("Manager"))
             {
