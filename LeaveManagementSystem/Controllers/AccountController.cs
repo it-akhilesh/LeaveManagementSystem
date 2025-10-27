@@ -144,7 +144,7 @@ namespace LeaveManagementSystem.Controllers
                     
                     await _userManager.AddToRoleAsync(user, model.Role);
                     
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
                     string Subject = "Account Created";
                     string body = $"Congratulation Your user name is {user}, Your account has been successfully created." + $"Your password is {model.Password}.";
                     var isEmailSent = await _emailSender.EmailSendAsync(model.Email,Subject, body);
