@@ -35,5 +35,8 @@ namespace LeaveManagementSystem.ViewModels
 
         [StringLength(200)]
         public string Address { get; set; }
+
+        public IFormFile? ProfilePicture { get; set; }
+        public string? ProfileImagePath { get; set; }
     }
 }

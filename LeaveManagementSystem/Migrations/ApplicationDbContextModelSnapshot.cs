@@ -342,6 +342,9 @@ namespace LeaveManagementSystem.Migrations
                     b.Property<string>("ManagerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ProfileImagePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasIndex("ManagerId");
 
                     b.HasDiscriminator().HasValue("Employee");

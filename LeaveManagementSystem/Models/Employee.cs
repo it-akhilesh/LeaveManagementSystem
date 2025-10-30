@@ -27,6 +27,8 @@ namespace LeaveManagementSystem.Models
         [StringLength(200)]
         public string? Address { get; set; }
 
+        public string? ProfileImagePath { get; set; }
+
         public string? ManagerId { get; set; }
 
         public virtual Employee Manager { get; set; }

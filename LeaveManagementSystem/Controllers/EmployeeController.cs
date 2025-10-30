@@ -36,7 +36,8 @@ namespace LeaveManagementSystem.Controllers
                 Department = user.Department,
                 Designation = user.Designation,
                 DateOfJoining = user.DateOfJoining,
-                Address = user.Address
+                Address = user.Address,
+                ProfileImagePath = user.ProfileImagePath
             };
 
             return View(model);
@@ -57,6 +58,38 @@ namespace LeaveManagementSystem.Controllers
                 user.Department = model.Department;
                 user.Designation = model.Designation;
                 user.Address = model.Address;
+
+                if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+                {
+                    // Create folder if not exists
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+
+                    // Generate unique file name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.ProfilePicture.FileName);
+                    var filePath = Path.Combine(folderPath, fileName);
+
+                    // Save image
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ProfilePicture.CopyToAsync(stream);
+                    }
+
+                    // Optional: delete old profile image if exists
+                    if (!string.IsNullOrEmpty(user.ProfileImagePath))
+                    {
+                        var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.ProfileImagePath.TrimStart('/'));
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            System.IO.File.Delete(oldPath);
+                        }
+                    }
+
+                    // Save new path (relative path for web)
+                    user.ProfileImagePath = "/uploads/" + fileName;
+                }
 
                 var result = await _userManager.UpdateAsync(user);
 

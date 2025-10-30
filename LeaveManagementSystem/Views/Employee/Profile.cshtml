@@ -9,12 +9,12 @@
             <div class="card shadow-lg border-0 rounded-4 border-override">
                 <!-- Card Header -->
                 <div class="card-header text-white text-center py-4 model-header-gradient">
-                    <h3 class="fw-bold mb-0"><i class="bi bi-person-circle me-2"></i> Employee Profile</h3>
+                    <h3 class="fw-bold mb-0"><i class="bi bi-person-circle me-2"></i> Admin Profile</h3>
                 </div>
 
                 <!-- Card Body -->
                 <div class="card-body p-4">
-                    <form asp-action="Profile" method="post">
+                    <form asp-action="Profile" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="All" class="text-danger mb-3"></div>
                         <input asp-for="Id" type="hidden" />
 
@@ -70,6 +70,32 @@
                                 <span asp-validation-for="Designation" class="text-danger"></span>
                             </div>
                         </div>
+
+                        <!-- Profile Picture -->
+                        <div class="mb-3 text-center">
+                            <label class="form-label fw-semibold">Profile Picture</label>
+                            <div class="mb-2">
+                                <img id="profilePreview"
+                                     src="@(!string.IsNullOrEmpty(Model.ProfileImagePath) ? Model.ProfileImagePath : "/images/default-user.png")"
+                                     alt="Profile Image"
+                                     class="rounded-circle"
+                                     style="width:120px; height:120px; object-fit:cover; border:1px solid #ccc;" />
+                            </div>
+                            <input asp-for="ProfilePicture" type="file" class="form-control form-control-lg" accept="image/*" onchange="previewImage(event)" />
+                            <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                        </div>
+
+                        <script>
+                            function previewImage(event) {
+                                var reader = new FileReader();
+                                reader.onload = function () {
+                                    var output = document.getElementById('profilePreview');
+                                    output.src = reader.result;
+                                };
+                                reader.readAsDataURL(event.target.files[0]);
+                            }
+                        </script>
+
 
                         <!-- Address -->
                         <div class="mb-3">
