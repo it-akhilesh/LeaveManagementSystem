@@ -126,6 +126,15 @@ namespace LeaveManagementSystem.Controllers
                 })
                 .ToListAsync();
 
+            employees = employees
+        .OrderBy(e =>
+        {
+            // Remove all non-numeric characters and convert to int
+            var numPart = System.Text.RegularExpressions.Regex.Replace(e.EmployeeId ?? "0", "[^0-9]", "");
+            return int.TryParse(numPart, out int n) ? n : 0;
+        })
+        .ToList();
+
             return View(employees);
         }
     }
