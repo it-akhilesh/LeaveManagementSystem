@@ -56,32 +56,29 @@ namespace LeaveManagementSystem.Controllers
                     .CountAsync();
             }
 
-            if (roles.FirstOrDefault() == "Admin" )
+            if (roles.FirstOrDefault() == "Admin")
             {
-
-                var oneWeekAgo = DateTime.Now.AddDays(-7);
                 var activityInfo = await (from l in _context.LeaveRequests
                                           join u in _context.Users on l.EmployeeId equals u.Id
                                           join ur in _context.UserRoles on u.Id equals ur.UserId
                                           join r in _context.Roles on ur.RoleId equals r.Id
-                                          where l.RequestDate >= oneWeekAgo
-                                         && (r.Name == "Manager" || r.Name == "Employee")
-                                          orderby l.RequestDate,l.Id ascending
+                                          where (r.Name == "Manager" || r.Name == "Employee")
+                                          orderby l.RequestDate, l.Id ascending
                                           select new LeaveCreationActivity
                                           {
                                               Id = l.Id,
                                               Name = l.Employee.FirstName + " " + l.Employee.LastName,
                                               EmailId = l.Employee.Email,
-                                              Designation = r.Name,   // from AspNetRoles
+                                              Designation = r.Name,
                                               Date = l.RequestDate,
                                               Status = l.Status
                                           })
                                   .ToListAsync();
-                dashboardViewModel.leaveCreationActivities = activityInfo;
 
+                dashboardViewModel.leaveCreationActivities = activityInfo;
             }
-            
-            
+
+
 
             ViewBag.TotalEmployees = totalEmployees;
             ViewBag.PendingRequests = pendingRequests;
