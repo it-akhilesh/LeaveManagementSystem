@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace LeaveManagementSystem.Controllers
 {
     [Authorize]
@@ -20,8 +22,10 @@ namespace LeaveManagementSystem.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
+            int pageSize = 5;
+
             var dashboardViewModel = new DashboardViewModel();
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
@@ -43,7 +47,7 @@ namespace LeaveManagementSystem.Controllers
 
             if (roles.FirstOrDefault() == "Admin")
             {
-                
+               
                 pendingApprovals = await _context.LeaveRequests
                     .Where(lr => lr.Status == LeaveStatus.Pending)
                     .CountAsync();
@@ -58,7 +62,18 @@ namespace LeaveManagementSystem.Controllers
 
             if (roles.FirstOrDefault() == "Admin")
             {
-                var activityInfo = await (from l in _context.LeaveRequests
+
+                var totalRecords = await (from l in _context.LeaveRequests
+                                          join u in _context.Users on l.EmployeeId equals u.Id
+                                          join ur in _context.UserRoles on u.Id equals ur.UserId
+                                          join r in _context.Roles on ur.RoleId equals r.Id
+                                          where (r.Name == "Manager" || r.Name == "Employee")
+                                          select l).CountAsync();
+
+                var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+
+                var activityInfo =  await (from l in _context.LeaveRequests
                                           join u in _context.Users on l.EmployeeId equals u.Id
                                           join ur in _context.UserRoles on u.Id equals ur.UserId
                                           join r in _context.Roles on ur.RoleId equals r.Id
@@ -72,20 +87,20 @@ namespace LeaveManagementSystem.Controllers
                                               Designation = r.Name,
                                               Date = l.RequestDate,
                                               Status = l.Status
-                                          })
-                                  .ToListAsync();
+                                          }).Skip((page - 1) * pageSize)
+                                  .Take(pageSize).ToListAsync();
 
                 dashboardViewModel.leaveCreationActivities = activityInfo;
+                dashboardViewModel.TotalPages = totalPages;
+                dashboardViewModel.CurrentPage = page;
             }
-
-
 
             ViewBag.TotalEmployees = totalEmployees;
             ViewBag.PendingRequests = pendingRequests;
             ViewBag.MyRequests = myRequests;
             ViewBag.PendingApprovals = pendingApprovals;
             
-            
+   
             return View(dashboardViewModel);
         }
     }
