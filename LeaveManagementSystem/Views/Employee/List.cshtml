@@ -47,6 +47,40 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Pagination Controls -->
+                        {
+                            var first = Model.FirstOrDefault();
+                            if (first != null && first.TotalPages > 1)
+                            {
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        @if (first.CurrentPage > 1)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" asp-action="List" asp-route-page="@(first.CurrentPage - 1)">Previous</a>
+                                            </li>
+                                        }
+
+                                        @for (int i = 1; i <= first.TotalPages; i++)
+                                        {
+                                            <li class="page-item @(first.CurrentPage == i ? "active" : "")">
+                                                <a class="page-link" asp-action="List" asp-route-page="@i">@i</a>
+                                            </li>
+                                        }
+
+                                        @if (first.CurrentPage < first.TotalPages)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" asp-action="List" asp-route-page="@(first.CurrentPage + 1)">Next</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </nav>
+                            }
+                        }
+
+
                     }
                     else
                     {

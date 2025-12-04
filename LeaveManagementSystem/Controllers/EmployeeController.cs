@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LeaveManagementSystem.Controllers
 {
@@ -110,8 +111,11 @@ namespace LeaveManagementSystem.Controllers
 
         // GET: Employee/List (HR/Admin only)
         [Authorize(Roles = "HR,Admin")]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(int page = 1)
         {
+            int pageSize = 10;
+
+            // ✅ Pehle data load karo (SQL se)
             var employees = await _userManager.Users
                 .Select(e => new EmployeeProfileViewModel
                 {
@@ -124,18 +128,32 @@ namespace LeaveManagementSystem.Controllers
                     Designation = e.Designation,
                     DateOfJoining = e.DateOfJoining
                 })
-                .ToListAsync();
+                .ToListAsync(); // <--- yahan tak EF chalega
 
+            // ✅ Ab C# me sort karo (EF nahi)
             employees = employees
-        .OrderBy(e =>
-        {
-            // Remove all non-numeric characters and convert to int
-            var numPart = System.Text.RegularExpressions.Regex.Replace(e.EmployeeId ?? "0", "[^0-9]", "");
-            return int.TryParse(numPart, out int n) ? n : 0;
-        })
-        .ToList();
+                .OrderBy(e =>
+                {
+                    var numPart = System.Text.RegularExpressions.Regex.Replace(e.EmployeeId ?? "0", "[^0-9]", "");
+                    return int.TryParse(numPart, out int n) ? n : 0;
+                })
+                .ToList();
 
-            return View(employees);
+            int totalRecords = employees.Count;
+
+            var pagedEmployees = employees
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            if (pagedEmployees.Any())
+            {
+                pagedEmployees.First().CurrentPage = page;
+                pagedEmployees.First().TotalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+            }
+
+            return View(pagedEmployees);
         }
+
     }
 }
